@@ -44,7 +44,7 @@ namespace Job.WinUI
         }
         private void Form1_Load(object sender, EventArgs e)
         {
-            
+
             int year = DateTime.Now.Year;
             int month = DateTime.Now.Month;
             var result = _dailyWorkService.GetByYearsMonth(year, month);
@@ -392,7 +392,7 @@ namespace Job.WinUI
             //this.dailyWorkTableAdapter.FillBy(this.jOBDataSet.DailyWork);
             int year = DateTime.Now.Year;
             int month = DateTime.Now.Month;
-            var result = _dailyWorkService.GetByYearsMonth(year,month);
+            var result = _dailyWorkService.GetByYearsMonth(year, month);
             LoadData(result);
             TotalExtrAndMissgWorkingForTxtBx(year, month);
         }
@@ -471,6 +471,8 @@ namespace Job.WinUI
                         var entity = _dailyWorkService.GetByID(result);
                         _dailyWorkService.Delete(entity);
                         MessageBox.Show("Removed..");
+                        var data = _dailyWorkService.GetAll();
+                        LoadData(data);
                     }
                 }
 
