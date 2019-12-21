@@ -21,24 +21,30 @@ namespace Job.WinUI
     public partial class Form1 : Form
     {
         private IDailyWorkService _dailyWorkService;
-        [Obsolete]
-        IKernel kernel = new StandardKernel();
 
         [Obsolete]
         public Form1()
         {
             InitializeComponent();
-            kernel.Bind<IDailyWorkService>().To<DailyWorkManager>().InSingletonScope();
-            kernel.Bind<IDailyWorkDal>().To<EfDailyWorkDal>().InSingletonScope();
+
+            /// ---------- üçüncü kullanım ---------------///
+            IKernel kernel = new StandardKernel(new BusinessModule());
             _dailyWorkService = kernel.Get<IDailyWorkService>();
 
 
+            /// ---------- ikinci kullanım ---------------///
+            //kernel.Bind<IDailyWorkService>().To<DailyWorkManager>().InSingletonScope();
+            //kernel.Bind<IDailyWorkDal>().To<EfDailyWorkDal>().InSingletonScope();
+            //_dailyWorkService = kernel.Get<IDailyWorkService>();
+
+
+            /// ---------- ilk kullanım ---------------///
             //_dailyWorkService = new DailyWorkManager(new EfDailyWorkDal());
             //_musteriService = new MusteriManager(new EfMusteriDal());
         }
         private void Form1_Load(object sender, EventArgs e)
         {
-            //deneme
+            
             int year = DateTime.Now.Year;
             int month = DateTime.Now.Month;
             var result = _dailyWorkService.GetByYearsMonth(year, month);
@@ -103,7 +109,6 @@ namespace Job.WinUI
                 cmbxChckInHour.Items.Add(item);
                 cmbxChckOutHour.Items.Add(item);
             }
-
             for (int i = 0; i < 60; i++)
             {
                 dakikalar[i] = dakikaBaslangic;
