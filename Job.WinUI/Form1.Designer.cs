@@ -45,6 +45,13 @@
             this.btnGetAllData = new System.Windows.Forms.Button();
             this.btnReflesh = new System.Windows.Forms.Button();
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
+            this.ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Date2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.CheckInTime2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.CheckOutTime2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.DailyWorkingHour2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ExtraWorkingHour2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.MissingWorkingHour2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.DataEntryTab = new System.Windows.Forms.TabPage();
             this.label6 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
@@ -70,13 +77,6 @@
             this.DailyWorkingHour = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ExtraWorkingHour = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.MissingWorkingHour = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Date2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.CheckInTime2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.CheckOutTime2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.DailyWorkingHour2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ExtraWorkingHour2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.MissingWorkingHour2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabControl1.SuspendLayout();
             this.ShowDataTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
@@ -284,6 +284,49 @@
             this.dataGridView2.Size = new System.Drawing.Size(916, 477);
             this.dataGridView2.TabIndex = 5;
             this.dataGridView2.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView2_CellClick);
+            // 
+            // ID
+            // 
+            this.ID.HeaderText = "ID";
+            this.ID.Name = "ID";
+            this.ID.Visible = false;
+            this.ID.Width = 43;
+            // 
+            // Date2
+            // 
+            this.Date2.HeaderText = "Date";
+            this.Date2.Name = "Date2";
+            this.Date2.Width = 55;
+            // 
+            // CheckInTime2
+            // 
+            this.CheckInTime2.HeaderText = "CheckInTime";
+            this.CheckInTime2.Name = "CheckInTime2";
+            this.CheckInTime2.Width = 95;
+            // 
+            // CheckOutTime2
+            // 
+            this.CheckOutTime2.HeaderText = "CheckOutTime";
+            this.CheckOutTime2.Name = "CheckOutTime2";
+            this.CheckOutTime2.Width = 103;
+            // 
+            // DailyWorkingHour2
+            // 
+            this.DailyWorkingHour2.HeaderText = "DailyWorkingHour";
+            this.DailyWorkingHour2.Name = "DailyWorkingHour2";
+            this.DailyWorkingHour2.Width = 118;
+            // 
+            // ExtraWorkingHour2
+            // 
+            this.ExtraWorkingHour2.HeaderText = "ExtraWorkingHour";
+            this.ExtraWorkingHour2.Name = "ExtraWorkingHour2";
+            this.ExtraWorkingHour2.Width = 119;
+            // 
+            // MissingWorkingHour2
+            // 
+            this.MissingWorkingHour2.HeaderText = "MissingWorkingHour";
+            this.MissingWorkingHour2.Name = "MissingWorkingHour2";
+            this.MissingWorkingHour2.Width = 130;
             // 
             // DataEntryTab
             // 
@@ -547,49 +590,6 @@
             this.MissingWorkingHour.MinimumWidth = 6;
             this.MissingWorkingHour.Name = "MissingWorkingHour";
             this.MissingWorkingHour.Width = 130;
-            // 
-            // ID
-            // 
-            this.ID.HeaderText = "ID";
-            this.ID.Name = "ID";
-            this.ID.Visible = false;
-            this.ID.Width = 43;
-            // 
-            // Date2
-            // 
-            this.Date2.HeaderText = "Date";
-            this.Date2.Name = "Date2";
-            this.Date2.Width = 55;
-            // 
-            // CheckInTime2
-            // 
-            this.CheckInTime2.HeaderText = "CheckInTime";
-            this.CheckInTime2.Name = "CheckInTime2";
-            this.CheckInTime2.Width = 95;
-            // 
-            // CheckOutTime2
-            // 
-            this.CheckOutTime2.HeaderText = "CheckOutTime";
-            this.CheckOutTime2.Name = "CheckOutTime2";
-            this.CheckOutTime2.Width = 103;
-            // 
-            // DailyWorkingHour2
-            // 
-            this.DailyWorkingHour2.HeaderText = "DailyWorkingHour";
-            this.DailyWorkingHour2.Name = "DailyWorkingHour2";
-            this.DailyWorkingHour2.Width = 118;
-            // 
-            // ExtraWorkingHour2
-            // 
-            this.ExtraWorkingHour2.HeaderText = "ExtraWorkingHour";
-            this.ExtraWorkingHour2.Name = "ExtraWorkingHour2";
-            this.ExtraWorkingHour2.Width = 119;
-            // 
-            // MissingWorkingHour2
-            // 
-            this.MissingWorkingHour2.HeaderText = "MissingWorkingHour";
-            this.MissingWorkingHour2.Name = "MissingWorkingHour2";
-            this.MissingWorkingHour2.Width = 130;
             // 
             // Form1
             // 

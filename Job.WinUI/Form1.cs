@@ -152,20 +152,37 @@ namespace Job.WinUI
 
         private void btnCheckOut_Click(object sender, EventArgs e)
         {
-            var mustDailyWorkingHour = "08:00";
+            var mustDailyWorkingHour =
+                dtpDate.Value.DayOfWeek == DayOfWeek.Sunday ? "00:00"
+                : dtpDate.Value.DayOfWeek == DayOfWeek.Saturday ? "05:00"
+                : "08:00";
             var checkOutHour = Convert.ToInt32(cmbxChckOutHour.SelectedItem.ToString());
             var checkOutMinute = Convert.ToInt32(cmbxChckOutMinute.SelectedItem.ToString());
             var checkInHour = Convert.ToInt32(cmbxChckInHour.SelectedItem.ToString());
             var checkInMinute = Convert.ToInt32(cmbxChckInMinute.SelectedItem.ToString());
+            var lunchBreakMinute =
+                  dtpDate.Value.DayOfWeek == DayOfWeek.Sunday && checkOutHour > 12 ? 60
+                : dtpDate.Value.DayOfWeek == DayOfWeek.Sunday && (checkOutHour == 12 && checkOutMinute > 0) ? checkOutMinute
+                : dtpDate.Value.DayOfWeek == DayOfWeek.Sunday && checkOutHour <= 12 ? 0
+
+                : dtpDate.Value.DayOfWeek == DayOfWeek.Saturday && checkOutHour > 12 ? 30
+                : dtpDate.Value.DayOfWeek == DayOfWeek.Saturday && (checkOutHour == 12 && checkOutMinute > 0) ? checkOutMinute
+                : dtpDate.Value.DayOfWeek == DayOfWeek.Saturday && checkOutHour <= 12 ? 0
+
+                : checkOutHour > 12 ? 60
+                : (checkOutHour == 12 && checkOutMinute > 0) ? checkOutMinute
+                : checkOutHour <= 12 ? 0
+                : 60;
+            var dinnerBreakMinute = 30;
             dgvWorking["CheckOutTime", 0].Value = Convert.ToDateTime((string.Join(":", checkOutHour, checkOutMinute))).ToString("HH:mm");
 
-            if (dtpDate.Value.DayOfWeek == DayOfWeek.Saturday)
-            {
-                mustDailyWorkingHour = "05:00";
 
+            //**************************************************//
+            try
+            {
                 if (checkOutHour == 18 && checkOutMinute > 30)
                 {
-                    var workingTimeHOUR = ((checkOutHour - checkInHour) * 60) + (checkOutMinute - checkInMinute) - 60;
+                    var workingTimeHOUR = ((checkOutHour - checkInHour) * 60) + (checkOutMinute - checkInMinute) - (lunchBreakMinute + dinnerBreakMinute);
                     dgvWorking["DailyWorkingHour", 0].Value = Convert.ToDateTime(workingTimeHOUR / 60 + ":" + workingTimeHOUR % 60).ToString("HH:mm");
                     TimeSpan result = (Convert.ToDateTime(workingTimeHOUR / 60 + ":" + workingTimeHOUR % 60) - Convert.ToDateTime(mustDailyWorkingHour));
                     if (result.TotalMinutes < 0)
@@ -173,7 +190,7 @@ namespace Job.WinUI
                         dgvWorking["MissingWorkingHour", 0].Value = -result;
                         dgvWorking["ExtraWorkingHour", 0].Value = -result + result;
                     }
-                    else if (result.TotalMinutes >= 0)
+                    else if (result.TotalMinutes > 0)
                     {
                         dgvWorking["ExtraWorkingHour", 0].Value = result;
                         dgvWorking["MissingWorkingHour", 0].Value = result - result;
@@ -181,7 +198,7 @@ namespace Job.WinUI
                 }
                 else if (checkOutHour > 18)
                 {
-                    var workingTimeHOUR = ((checkOutHour - checkInHour) * 60) + (checkOutMinute - checkInMinute) - 60;
+                    var workingTimeHOUR = ((checkOutHour - checkInHour) * 60) + (checkOutMinute - checkInMinute) - (lunchBreakMinute + dinnerBreakMinute);
                     dgvWorking["DailyWorkingHour", 0].Value = Convert.ToDateTime(workingTimeHOUR / 60 + ":" + workingTimeHOUR % 60).ToString("HH:mm");
                     TimeSpan result = (Convert.ToDateTime(workingTimeHOUR / 60 + ":" + workingTimeHOUR % 60) - Convert.ToDateTime(mustDailyWorkingHour));
                     if (result.TotalMinutes < 0)
@@ -198,7 +215,7 @@ namespace Job.WinUI
                 else if (checkOutHour == 18 && checkOutMinute <= 30)
                 {
                     checkOutMinute = 0;
-                    var workingTimeHOUR = ((checkOutHour - checkInHour) * 60) + (checkOutMinute - checkInMinute) - 30;
+                    var workingTimeHOUR = ((checkOutHour - checkInHour) * 60) + (checkOutMinute - checkInMinute) - lunchBreakMinute;
                     dgvWorking["DailyWorkingHour", 0].Value = Convert.ToDateTime(workingTimeHOUR / 60 + ":" + workingTimeHOUR % 60).ToString("HH:mm");
                     TimeSpan result = (Convert.ToDateTime(workingTimeHOUR / 60 + ":" + workingTimeHOUR % 60)) - Convert.ToDateTime((mustDailyWorkingHour));
                     if (result.TotalMinutes < 0)
@@ -206,16 +223,15 @@ namespace Job.WinUI
                         dgvWorking["MissingWorkingHour", 0].Value = -result;
                         dgvWorking["ExtraWorkingHour", 0].Value = -result + result;
                     }
-                    else if (result.TotalMinutes > 0)
+                    else if (result.TotalMinutes >= 0)
                     {
                         dgvWorking["ExtraWorkingHour", 0].Value = result;
                         dgvWorking["MissingWorkingHour", 0].Value = result - result;
                     }
-
                 }
                 else
                 {
-                    var workingTimeHOUR = ((checkOutHour - checkInHour) * 60) + (checkOutMinute - checkInMinute) - 30;
+                    var workingTimeHOUR = ((checkOutHour - checkInHour) * 60) + (checkOutMinute - checkInMinute) - lunchBreakMinute;
                     dgvWorking["DailyWorkingHour", 0].Value = Convert.ToDateTime(workingTimeHOUR / 60 + ":" + workingTimeHOUR % 60).ToString("HH:mm");
                     TimeSpan result = (Convert.ToDateTime(workingTimeHOUR / 60 + ":" + workingTimeHOUR % 60) - Convert.ToDateTime(mustDailyWorkingHour));
                     if (result.TotalMinutes < 0)
@@ -223,7 +239,7 @@ namespace Job.WinUI
                         dgvWorking["MissingWorkingHour", 0].Value = -result;
                         dgvWorking["ExtraWorkingHour", 0].Value = -result + result;
                     }
-                    else if (result.TotalMinutes > 0)
+                    else if (result.TotalMinutes >= 0)
                     {
                         dgvWorking["ExtraWorkingHour", 0].Value = result;
                         dgvWorking["MissingWorkingHour", 0].Value = result - result;
@@ -231,76 +247,9 @@ namespace Job.WinUI
                 }
                 btnConfirm.Enabled = true;
             }
-
-            else
+            catch (Exception)
             {
-                if (checkOutHour == 18 && checkOutMinute > 30)
-                {
-                    var workingTimeHOUR = ((checkOutHour - checkInHour) * 60) + (checkOutMinute - checkInMinute) - 90;
-                    dgvWorking["DailyWorkingHour", 0].Value = Convert.ToDateTime(workingTimeHOUR / 60 + ":" + workingTimeHOUR % 60).ToString("HH:mm");
-                    TimeSpan result = (Convert.ToDateTime(workingTimeHOUR / 60 + ":" + workingTimeHOUR % 60) - Convert.ToDateTime(mustDailyWorkingHour));
-                    if (result.TotalMinutes < 0)
-                    {
-                        dgvWorking["MissingWorkingHour", 0].Value = -result;
-                        dgvWorking["ExtraWorkingHour", 0].Value = -result + result;
-                    }
-                    else if (result.TotalMinutes > 0)
-                    {
-                        dgvWorking["ExtraWorkingHour", 0].Value = result;
-                        dgvWorking["MissingWorkingHour", 0].Value = result - result;
-                    }
-                }
-                else if (checkOutHour > 18)
-                {
-                    var workingTimeHOUR = ((checkOutHour - checkInHour) * 60) + (checkOutMinute - checkInMinute) - 90;
-                    dgvWorking["DailyWorkingHour", 0].Value = Convert.ToDateTime(workingTimeHOUR / 60 + ":" + workingTimeHOUR % 60).ToString("HH:mm");
-                    TimeSpan result = (Convert.ToDateTime(workingTimeHOUR / 60 + ":" + workingTimeHOUR % 60) - Convert.ToDateTime(mustDailyWorkingHour));
-                    if (result.TotalMinutes < 0)
-                    {
-                        dgvWorking["MissingWorkingHour", 0].Value = -result;
-                        dgvWorking["ExtraWorkingHour", 0].Value = -result + result;
-                    }
-                    else if (result.TotalMinutes > 0)
-                    {
-                        dgvWorking["ExtraWorkingHour", 0].Value = result;
-                        dgvWorking["MissingWorkingHour", 0].Value = result - result;
-                    }
-                }
-                else if (checkOutHour == 18 && checkOutMinute <= 30)
-                {
-                    checkOutMinute = 0;
-                    var workingTimeHOUR = ((checkOutHour - checkInHour) * 60) + (checkOutMinute - checkInMinute) - 60;
-                    dgvWorking["DailyWorkingHour", 0].Value = Convert.ToDateTime(workingTimeHOUR / 60 + ":" + workingTimeHOUR % 60).ToString("HH:mm");
-                    TimeSpan result = (Convert.ToDateTime(workingTimeHOUR / 60 + ":" + workingTimeHOUR % 60)) - Convert.ToDateTime((mustDailyWorkingHour));
-                    if (result.TotalMinutes < 0)
-                    {
-                        dgvWorking["MissingWorkingHour", 0].Value = -result;
-                        dgvWorking["ExtraWorkingHour", 0].Value = -result + result;
-                    }
-                    else if (result.TotalMinutes >= 0)
-                    {
-                        dgvWorking["ExtraWorkingHour", 0].Value = result;
-                        dgvWorking["MissingWorkingHour", 0].Value = result - result;
-                    }
-                }
-                else
-                {
-                    var workingTimeHOUR = ((checkOutHour - checkInHour) * 60) + (checkOutMinute - checkInMinute) - 60;
-                    dgvWorking["DailyWorkingHour", 0].Value = Convert.ToDateTime(workingTimeHOUR / 60 + ":" + workingTimeHOUR % 60).ToString("HH:mm");
-                    TimeSpan result = (Convert.ToDateTime(workingTimeHOUR / 60 + ":" + workingTimeHOUR % 60) - Convert.ToDateTime(mustDailyWorkingHour));
-                    if (result.TotalMinutes < 0)
-                    {
-                        dgvWorking["MissingWorkingHour", 0].Value = -result;
-                        dgvWorking["ExtraWorkingHour", 0].Value = -result + result;
-                    }
-                    else if (result.TotalMinutes > 0)
-                    {
-                        dgvWorking["ExtraWorkingHour", 0].Value = result;
-                        dgvWorking["MissingWorkingHour", 0].Value = result - result;
-                    }
-                }
-                btnConfirm.Enabled = true;
-
+                MessageBox.Show("There is problem!!!...");
             }
         }
 
@@ -327,6 +276,9 @@ namespace Job.WinUI
                     dgvWorking["DailyWorkingHour", 0].Value = null;
                     dgvWorking["ExtraWorkingHour", 0].Value = null;
                     dgvWorking["MissingWorkingHour", 0].Value = null;
+                    cmbxChckOutHour.Enabled = false;
+                    cmbxChckOutMinute.Enabled = false;
+                    btnCheckOut.Enabled = false;
                     MessageBox.Show("Added");
                 }
                 else
@@ -349,6 +301,9 @@ namespace Job.WinUI
                         dgvWorking["DailyWorkingHour", 0].Value = null;
                         dgvWorking["ExtraWorkingHour", 0].Value = null;
                         dgvWorking["MissingWorkingHour", 0].Value = null;
+                        cmbxChckOutHour.Enabled = false;
+                        cmbxChckOutMinute.Enabled = false;
+                        btnCheckOut.Enabled = false;
                         MessageBox.Show("Updated");
 
                     }
@@ -356,9 +311,7 @@ namespace Job.WinUI
                     {
                         return;
                     }
-
                 }
-
             }
             catch (Exception ex)
             {
@@ -385,6 +338,13 @@ namespace Job.WinUI
             dgvWorking["DailyWorkingHour", 0].Value = null;
             dgvWorking["ExtraWorkingHour", 0].Value = null;
             dgvWorking["MissingWorkingHour", 0].Value = null;
+            cmbxChckInHour.SelectedItem = null;
+            cmbxChckInMinute.SelectedItem = null;
+            cmbxChckOutHour.SelectedItem = null;
+            cmbxChckOutMinute.SelectedItem = null;
+            cmbxChckOutHour.Enabled = false;
+            cmbxChckOutMinute.Enabled = false;
+            btnCheckOut.Enabled = false;
         }
 
         private void btnReflesh_Click(object sender, EventArgs e)
@@ -420,42 +380,32 @@ namespace Job.WinUI
 
         private void btnGetSelectedDateData_Click(object sender, EventArgs e)
         {
-            int year = Convert.ToInt32(cmbxYears.SelectedItem);
-            int month = 0;
-            if (cmbxMonths.SelectedItem.ToString() == "January")
-                month = 1;
-            else if (cmbxMonths.SelectedItem.ToString() == "February")
-                month = 2;
-            else if (cmbxMonths.SelectedItem.ToString() == "March")
-                month = 3;
-            else if (cmbxMonths.SelectedItem.ToString() == "April")
-                month = 4;
-            else if (cmbxMonths.SelectedItem.ToString() == "May")
-                month = 5;
-            else if (cmbxMonths.SelectedItem.ToString() == "June")
-                month = 6;
-            else if (cmbxMonths.SelectedItem.ToString() == "July")
-                month = 7;
-            else if (cmbxMonths.SelectedItem.ToString() == "August")
-                month = 8;
-            else if (cmbxMonths.SelectedItem.ToString() == "September")
-                month = 9;
-            else if (cmbxMonths.SelectedItem.ToString() == "October")
-                month = 10;
-            else if (cmbxMonths.SelectedItem.ToString() == "November")
-                month = 11;
-            else if (cmbxMonths.SelectedItem.ToString() == "December")
-                month = 12;
-            var result = _dailyWorkService.GetByYearsMonth(year, month);
-            LoadData(result);
-
-            //var totalExtraWrk = _dailyWorkService.TotalExtraWork(year, month);
-            //var totalMisngWrk = _dailyWorkService.TotalMissingWork(year, month);
-            //txtTotalExtrWrking.Text = Convert.ToDateTime((totalExtraWrk / 60).ToString() + ":" + (totalExtraWrk % 60)).ToString("HH:mm");
-            //txtTotalMissWrking.Text = Convert.ToDateTime((totalMisngWrk / 60).ToString() + ":" + (totalMisngWrk % 60)).ToString("HH:mm");
-
-            TotalExtrAndMissgWorkingForTxtBx(year, month);
-
+            if (cmbxMonths.SelectedItem == null || cmbxYears.SelectedItem == null)
+            {
+                MessageBox.Show("Choose year and month...", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            else
+            {
+                int year = Convert.ToInt32(cmbxYears.SelectedItem);
+                int month =
+                   (cmbxMonths.SelectedItem.ToString() == "January") ? 1 :
+                   (cmbxMonths.SelectedItem.ToString() == "February") ? 2 :
+                   (cmbxMonths.SelectedItem.ToString() == "March") ? 3 :
+                   (cmbxMonths.SelectedItem.ToString() == "April") ? 4 :
+                   (cmbxMonths.SelectedItem.ToString() == "May") ? 5 :
+                   (cmbxMonths.SelectedItem.ToString() == "June") ? 6 :
+                   (cmbxMonths.SelectedItem.ToString() == "July") ? 7 :
+                   (cmbxMonths.SelectedItem.ToString() == "August") ? 8 :
+                   (cmbxMonths.SelectedItem.ToString() == "September") ? 9 :
+                   (cmbxMonths.SelectedItem.ToString() == "October") ? 10 :
+                   (cmbxMonths.SelectedItem.ToString() == "November") ? 11 :
+                   (cmbxMonths.SelectedItem.ToString() == "December") ? 12 : 0;
+                var result = _dailyWorkService.GetByYearsMonth(year, month);
+                LoadData(result);
+                cmbxMonths.SelectedItem = null;
+                cmbxYears.SelectedItem = null;
+                TotalExtrAndMissgWorkingForTxtBx(year, month);
+            }
         }
 
         private void dataGridView2_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -475,7 +425,6 @@ namespace Job.WinUI
                         LoadData(data);
                     }
                 }
-
             }
             else if (e.ColumnIndex == 8)
             {
@@ -489,7 +438,7 @@ namespace Job.WinUI
             var totalMisngWork = _dailyWorkService.TotalMissingWork(year, month);
             txtTotalExtrWrking.Text = Convert.ToDateTime((totalExtraWrk / 60).ToString() + ":" + (totalExtraWrk % 60)).ToString("HH:mm");
             txtTotalMissWrking.Text = Convert.ToDateTime((totalMisngWork / 60).ToString() + ":" + (totalMisngWork % 60)).ToString("HH:mm");
-            if (totalExtraWrk > totalMisngWork)
+            if (totalExtraWrk >= totalMisngWork)
             {
                 var result = totalExtraWrk - totalMisngWork;
                 txtTotal.Text = Convert.ToDateTime((result / 60).ToString() + ":" + (result % 60)).ToString("HH:mm");
@@ -501,6 +450,5 @@ namespace Job.WinUI
 
             }
         }
-
     }
 }
