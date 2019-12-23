@@ -23,5 +23,6 @@ namespace Job.Business.Abstract
         DailyWork Update(DailyWork daily);
         void Delete(DailyWork daily);
 
+        decimal CalculateSalary(int year, int month,int salary);
     }
 }

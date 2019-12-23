@@ -106,5 +106,18 @@ namespace Job.Business.Concrete
             }
             return result;
         }
+
+        public decimal CalculateSalary(int year, int month,int salary)
+        {
+            decimal result = 0;
+            decimal hourlyRate = 15M;
+            var data = _efDailyWorkDal.GetList().Where(r => r.Date.Year == year && r.Date.Month == month);
+            foreach (var item in data)
+            {
+               result = result + Convert.ToDecimal(item.ExtraWorkingHour.Value.TotalMinutes - item.MissingWorkingHour.Value.TotalMinutes);
+            }
+            result =(result / 60)*1.5M*(hourlyRate);
+            return salary + result;
+        }
     }
 }

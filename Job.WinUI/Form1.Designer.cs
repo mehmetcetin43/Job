@@ -77,6 +77,9 @@
             this.DailyWorkingHour = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ExtraWorkingHour = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.MissingWorkingHour = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.button1 = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.textBox2 = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.ShowDataTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
@@ -100,6 +103,9 @@
             // ShowDataTab
             // 
             this.ShowDataTab.AutoScroll = true;
+            this.ShowDataTab.Controls.Add(this.textBox2);
+            this.ShowDataTab.Controls.Add(this.textBox1);
+            this.ShowDataTab.Controls.Add(this.button1);
             this.ShowDataTab.Controls.Add(this.txtTotal);
             this.ShowDataTab.Controls.Add(this.label14);
             this.ShowDataTab.Controls.Add(this.label12);
@@ -591,6 +597,30 @@
             this.MissingWorkingHour.Name = "MissingWorkingHour";
             this.MissingWorkingHour.Width = 130;
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(411, 38);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 28;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(411, 70);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(100, 20);
+            this.textBox1.TabIndex = 29;
+            // 
+            // textBox2
+            // 
+            this.textBox2.Location = new System.Drawing.Point(411, 6);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(100, 20);
+            this.textBox2.TabIndex = 30;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -664,6 +694,9 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn DailyWorkingHour2;
         private System.Windows.Forms.DataGridViewTextBoxColumn ExtraWorkingHour2;
         private System.Windows.Forms.DataGridViewTextBoxColumn MissingWorkingHour2;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TextBox textBox2;
     }
 }
 
