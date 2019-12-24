@@ -451,11 +451,13 @@ namespace Job.WinUI
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void btnCalculateSalary_Click(object sender, EventArgs e)
         {
-            int salary = Convert.ToInt32(textBox2.Text);
-            var result = _dailyWorkService.CalculateSalary(DateTime.Now.Year, DateTime.Now.Month, salary);
-            textBox1.Text = result.ToString();
+            int salary = Convert.ToInt32(txtSalary.Text);
+            var wage = _dailyWorkService.HourlyWage(DateTime.Now.Month, salary);
+            var result = _dailyWorkService.CalculateSalary(DateTime.Now.Year, DateTime.Now.Month, salary, wage);
+
+            txtTotalSalary.Text = decimal.Round(result).ToString();
         }
     }
 }

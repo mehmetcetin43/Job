@@ -32,7 +32,7 @@ namespace Job.Business.Concrete
 
         public DailyWork GetByID(int id)
         {
-          return  _efDailyWorkDal.Get(u => u.ID == id);
+            return _efDailyWorkDal.Get(u => u.ID == id);
         }
 
         public List<DailyWork> GetAll()
@@ -58,18 +58,18 @@ namespace Job.Business.Concrete
             List<string> monts = new List<string>();
             foreach (var item in result)
             {
-                if (item == 1)  monts.Add("January");
-                else if (item == 2)  monts.Add("February");
-                else if (item == 3)  monts.Add("March");
-                else if (item == 4)  monts.Add("April");
-                else if (item == 5)  monts.Add("March");
-                else if (item == 6)  monts.Add("June");
-                else if (item == 7)  monts.Add("July");
-                else if (item == 8)  monts.Add("August");
-                else if (item == 9)  monts.Add("September");
-                else if (item == 10)  monts.Add("October");
-                else if (item == 11)  monts.Add("November");
-                else if (item == 12)  monts.Add("December");
+                if (item == 1) monts.Add("January");
+                else if (item == 2) monts.Add("February");
+                else if (item == 3) monts.Add("March");
+                else if (item == 4) monts.Add("April");
+                else if (item == 5) monts.Add("March");
+                else if (item == 6) monts.Add("June");
+                else if (item == 7) monts.Add("July");
+                else if (item == 8) monts.Add("August");
+                else if (item == 9) monts.Add("September");
+                else if (item == 10) monts.Add("October");
+                else if (item == 11) monts.Add("November");
+                else if (item == 12) monts.Add("December");
             }
             return monts;
         }
@@ -85,10 +85,10 @@ namespace Job.Business.Concrete
             return result;
         }
 
-        public int TotalExtraWork(int year,int month)
+        public int TotalExtraWork(int year, int month)
         {
             var result = 0;
-            var totalExtraWork = _efDailyWorkDal.GetList().Where(u => u.Date.Month == month&& u.Date.Year==year).Select(u => u.ExtraWorkingHour).ToList();
+            var totalExtraWork = _efDailyWorkDal.GetList().Where(u => u.Date.Month == month && u.Date.Year == year).Select(u => u.ExtraWorkingHour).ToList();
             foreach (var item in totalExtraWork)
             {
                 result = result + Convert.ToInt32(item.Value.TotalMinutes);
@@ -96,10 +96,10 @@ namespace Job.Business.Concrete
             return result;
         }
 
-        public int TotalMissingWork(int year,int month)
+        public int TotalMissingWork(int year, int month)
         {
             var result = 0;
-            var totalMissingWork = _efDailyWorkDal.GetList().Where(u => u.Date.Month == month&&u.Date.Year==year).Select(u => u.MissingWorkingHour).ToList();
+            var totalMissingWork = _efDailyWorkDal.GetList().Where(u => u.Date.Month == month && u.Date.Year == year).Select(u => u.MissingWorkingHour).ToList();
             foreach (var item in totalMissingWork)
             {
                 result = result + Convert.ToInt32(item.Value.TotalMinutes);
@@ -107,17 +107,47 @@ namespace Job.Business.Concrete
             return result;
         }
 
-        public decimal CalculateSalary(int year, int month,int salary)
+        public decimal CalculateSalary(int year, int month, int salary,decimal hourlyWage)
         {
             decimal result = 0;
-            decimal hourlyRate = 15M;
+           
             var data = _efDailyWorkDal.GetList().Where(r => r.Date.Year == year && r.Date.Month == month);
             foreach (var item in data)
             {
-               result = result + Convert.ToDecimal(item.ExtraWorkingHour.Value.TotalMinutes - item.MissingWorkingHour.Value.TotalMinutes);
+                result = result + Convert.ToDecimal(item.ExtraWorkingHour.Value.TotalMinutes - item.MissingWorkingHour.Value.TotalMinutes);
             }
-            result =(result / 60)*1.5M*(hourlyRate);
+            result = (result / 60) * 1.5M * (hourlyWage);
             return salary + result;
+        }
+
+        public decimal HourlyWage(int month, decimal salary)
+        {
+            decimal hours = 0;
+            DateTime firstDay = new DateTime(DateTime.Now.Year,month,1);
+            var days = DateTime.DaysInMonth(DateTime.Now.Year, month);
+            for (int i = 1; i <= days; i++)
+            {
+                hours =
+                    firstDay.DayOfWeek == DayOfWeek.Monday
+                    || firstDay.DayOfWeek == DayOfWeek.Tuesday
+                    || firstDay.DayOfWeek == DayOfWeek.Wednesday
+                    || firstDay.DayOfWeek == DayOfWeek.Thursday
+                    || firstDay.DayOfWeek == DayOfWeek.Friday ? hours = hours + 8
+                    : firstDay.DayOfWeek == DayOfWeek.Saturday ? hours = hours + 5
+                    : hours = hours;
+
+                //if (firstDay.DayOfWeek==DayOfWeek.Monday || firstDay.DayOfWeek == DayOfWeek.Tuesday
+                //    || firstDay.DayOfWeek == DayOfWeek.Wednesday || firstDay.DayOfWeek == DayOfWeek.Thursday 
+                //    || firstDay.DayOfWeek == DayOfWeek.Friday)
+                //{
+                //    hours = hours + 8;
+                //}
+                firstDay = firstDay.AddDays(1);
+            }
+
+            decimal wage = salary / hours;
+            return wage;
+
         }
     }
 }
