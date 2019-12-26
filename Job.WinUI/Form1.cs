@@ -173,14 +173,14 @@ namespace Job.WinUI
                 : (checkOutHour == 12 && checkOutMinute > 0) ? checkOutMinute
                 : checkOutHour <= 12 ? 0
                 : 60;
-            var dinnerBreakMinute = 30;
+            var dinnerBreakMinute = 5;
             dgvWorking["CheckOutTime", 0].Value = Convert.ToDateTime((string.Join(":", checkOutHour, checkOutMinute))).ToString("HH:mm");
 
 
             //**************************************************//
             try
             {
-                if (checkOutHour == 18 && checkOutMinute > 30)
+                if (checkOutHour == 18 && checkOutMinute > 5)
                 {
                     var workingTimeHOUR = ((checkOutHour - checkInHour) * 60) + (checkOutMinute - checkInMinute) - (lunchBreakMinute + dinnerBreakMinute);
                     dgvWorking["DailyWorkingHour", 0].Value = Convert.ToDateTime(workingTimeHOUR / 60 + ":" + workingTimeHOUR % 60).ToString("HH:mm");
@@ -212,7 +212,7 @@ namespace Job.WinUI
                         dgvWorking["MissingWorkingHour", 0].Value = result - result;
                     }
                 }
-                else if (checkOutHour == 18 && checkOutMinute <= 30)
+                else if (checkOutHour == 18 && checkOutMinute <= 5)
                 {
                     checkOutMinute = 0;
                     var workingTimeHOUR = ((checkOutHour - checkInHour) * 60) + (checkOutMinute - checkInMinute) - lunchBreakMinute;
@@ -436,7 +436,18 @@ namespace Job.WinUI
         {
             var totalExtraWrk = _dailyWorkService.TotalExtraWork(year, month);
             var totalMisngWork = _dailyWorkService.TotalMissingWork(year, month);
-            txtTotalExtrWrking.Text = Convert.ToDateTime((totalExtraWrk / 60).ToString() + ":" + (totalExtraWrk % 60)).ToString("HH:mm");
+            try
+            {
+
+                txtTotalExtrWrking.Text = (totalExtraWrk / 60).ToString() + ":" +(totalExtraWrk % 60).ToString();
+
+                //txtTotalExtrWrking.Text = Convert.ToDateTime((totalExtraWrk / 60).ToString() + ":" + (totalExtraWrk % 60)).ToString("HH:mm");
+
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
             txtTotalMissWrking.Text = Convert.ToDateTime((totalMisngWork / 60).ToString() + ":" + (totalMisngWork % 60)).ToString("HH:mm");
             if (totalExtraWrk >= totalMisngWork)
             {
