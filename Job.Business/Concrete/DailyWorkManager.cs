@@ -107,10 +107,10 @@ namespace Job.Business.Concrete
             return result;
         }
 
-        public decimal CalculateSalary(int year, int month, int salary,decimal hourlyWage)
+        public decimal CalculateSalary(int year, int month, int salary, decimal hourlyWage)
         {
             decimal result = 0;
-           
+
             var data = _efDailyWorkDal.GetList().Where(r => r.Date.Year == year && r.Date.Month == month);
             foreach (var item in data)
             {
@@ -123,18 +123,25 @@ namespace Job.Business.Concrete
         public decimal HourlyWage(int month, decimal salary)
         {
             decimal hours = 0;
-            DateTime firstDay = new DateTime(DateTime.Now.Year,month,1);
+            DateTime firstDay = new DateTime(DateTime.Now.Year, month, 1);
+            DateTime _1_January = new DateTime(DateTime.Now.Year, 1, 1);
+            DateTime _23_April = new DateTime(DateTime.Now.Year, 4, 23);
+            DateTime _1_May = new DateTime(DateTime.Now.Year, 5, 1);
+            DateTime _30_August = new DateTime(DateTime.Now.Year, 4, 23);
+            DateTime _29_October = new DateTime(DateTime.Now.Year, 4, 23);
             var days = DateTime.DaysInMonth(DateTime.Now.Year, month);
             for (int i = 1; i <= days; i++)
             {
                 hours =
-                    firstDay.DayOfWeek == DayOfWeek.Monday
+                    firstDay.Date == _1_January || firstDay.Date == _1_May || firstDay.Date == _23_April || firstDay.Date == _29_October || firstDay.Date == _30_August ? hours
+                    : firstDay.DayOfWeek == DayOfWeek.Monday
                     || firstDay.DayOfWeek == DayOfWeek.Tuesday
                     || firstDay.DayOfWeek == DayOfWeek.Wednesday
                     || firstDay.DayOfWeek == DayOfWeek.Thursday
                     || firstDay.DayOfWeek == DayOfWeek.Friday ? hours = hours + 8
                     : firstDay.DayOfWeek == DayOfWeek.Saturday ? hours = hours + 5
-                    : hours = hours;
+
+                    : hours;
 
                 //if (firstDay.DayOfWeek==DayOfWeek.Monday || firstDay.DayOfWeek == DayOfWeek.Tuesday
                 //    || firstDay.DayOfWeek == DayOfWeek.Wednesday || firstDay.DayOfWeek == DayOfWeek.Thursday 

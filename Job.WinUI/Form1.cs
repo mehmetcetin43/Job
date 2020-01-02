@@ -153,7 +153,8 @@ namespace Job.WinUI
         private void btnCheckOut_Click(object sender, EventArgs e)
         {
             var mustDailyWorkingHour =
-                dtpDate.Value.DayOfWeek == DayOfWeek.Sunday ? "00:00"
+                dtpDate.Value.Date == new DateTime(DateTime.Now.Year,1,1) ? "00:00"
+                : dtpDate.Value.DayOfWeek == DayOfWeek.Sunday ? "00:00"
                 : dtpDate.Value.DayOfWeek == DayOfWeek.Saturday ? "05:00"
                 : "08:00";
             var checkOutHour = Convert.ToInt32(cmbxChckOutHour.SelectedItem.ToString());
