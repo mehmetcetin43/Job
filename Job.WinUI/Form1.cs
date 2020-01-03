@@ -1,11 +1,7 @@
 ﻿using Job.Business.Abstract;
-using Job.Business.Concrete;
 using Job.Business.DependencyResolves.Ninject;
-using Job.DataAccess.Abstract;
-using Job.DataAccess.Concrete;
 using Job.Entities.Entities;
 using Ninject;
-using Ninject.Modules;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -439,27 +435,23 @@ namespace Job.WinUI
             var totalMisngWork = _dailyWorkService.TotalMissingWork(year, month);
             try
             {
-
-                txtTotalExtrWrking.Text = (totalExtraWrk / 60).ToString() + ":" +(totalExtraWrk % 60).ToString();
-
                 //txtTotalExtrWrking.Text = Convert.ToDateTime((totalExtraWrk / 60).ToString() + ":" + (totalExtraWrk % 60)).ToString("HH:mm");
-
+                txtTotalExtrWrking.Text = (totalExtraWrk / 60).ToString("00") + ":" +(totalExtraWrk % 60).ToString("00");
+                txtTotalMissWrking.Text = (totalMisngWork / 60).ToString("00") + ":" + (totalMisngWork % 60).ToString("00");
+                if (totalExtraWrk >= totalMisngWork)
+                {
+                    var result = totalExtraWrk - totalMisngWork;
+                    txtTotal.Text = (result / 60).ToString("00") + ":" + (result % 60).ToString("00");
+                }
+                else if (totalExtraWrk < totalMisngWork)
+                {
+                    var result = totalExtraWrk - totalMisngWork;
+                    txtTotal.Text = "-" + (-result / 60).ToString("00") + ":" + (-result % 60).ToString("00");
+                }
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message);
-            }
-            txtTotalMissWrking.Text = Convert.ToDateTime((totalMisngWork / 60).ToString() + ":" + (totalMisngWork % 60)).ToString("HH:mm");
-            if (totalExtraWrk >= totalMisngWork)
-            {
-                var result = totalExtraWrk - totalMisngWork;
-                txtTotal.Text = Convert.ToDateTime((result / 60).ToString() + ":" + (result % 60)).ToString("HH:mm");
-            }
-            else if (totalExtraWrk < totalMisngWork)
-            {
-                var result = totalExtraWrk - totalMisngWork;
-                txtTotal.Text = "-" + Convert.ToDateTime((-result / 60).ToString() + ":" + (-result % 60)).ToString("HH:mm");
-
             }
         }
 
