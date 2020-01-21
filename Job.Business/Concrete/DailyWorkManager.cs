@@ -109,15 +109,50 @@ namespace Job.Business.Concrete
 
         public decimal CalculateSalary(int year, int month, int salary, decimal hourlyWage)
         {
-            decimal result = 0;
+            //decimal result = 0;
 
-            var data = _efDailyWorkDal.GetList().Where(r => r.Date.Year == year && r.Date.Month == month);
-            foreach (var item in data)
+            //var data = _efDailyWorkDal.GetList().Where(r => r.Date.Year == year && r.Date.Month == month);
+            //foreach (var item in data)
+            //{
+            //    result = result + Convert.ToDecimal(item.ExtraWorkingHour.Value.TotalMinutes - item.MissingWorkingHour.Value.TotalMinutes);
+            //}
+            //result = (result / 60) * 1.5M * (hourlyWage);
+            //return salary + result;
+
+
+            decimal holidayExtraSalary;
+            decimal weekdaysExtraSalary;
+            decimal totalSalary;
+            var dataHolidayExtra = _efDailyWorkDal.GetList().Where(r => r.Date.Year == year && r.Date.Month == month && (r.Date.DayOfWeek==DayOfWeek.Sunday || r.Date.DayOfWeek == DayOfWeek.Saturday))
+                .Select(t=>t.ExtraWorkingHour.Value.TotalMinutes).Sum();
+            var dataWeekDaysExtra = _efDailyWorkDal.GetList().Where(r => r.Date.Year == year && r.Date.Month == month && (r.Date.DayOfWeek != DayOfWeek.Sunday) && (r.Date.DayOfWeek != DayOfWeek.Saturday))
+                .Select(t => t.ExtraWorkingHour.Value.TotalMinutes).Sum();
+            var dataMissing = _efDailyWorkDal.GetList().Where(r => r.Date.Year == year && r.Date.Month == month).Select(t => t.MissingWorkingHour.Value.TotalMinutes).Sum();
+            if (dataHolidayExtra >= dataMissing)
             {
-                result = result + Convert.ToDecimal(item.ExtraWorkingHour.Value.TotalMinutes - item.MissingWorkingHour.Value.TotalMinutes);
+                dataHolidayExtra = dataHolidayExtra - dataMissing;
+                dataWeekDaysExtra = dataWeekDaysExtra;
             }
-            result = (result / 60) * 1.5M * (hourlyWage);
-            return salary + result;
+            else if (dataHolidayExtra < dataMissing)
+            {
+                dataHolidayExtra = -(dataMissing - dataHolidayExtra);
+                dataWeekDaysExtra = dataWeekDaysExtra + dataHolidayExtra;
+            }
+
+            if (dataHolidayExtra>=0)
+            {
+                holidayExtraSalary = Convert.ToDecimal(dataHolidayExtra) / 60 * 2M *  hourlyWage;
+                weekdaysExtraSalary = Convert.ToDecimal(dataWeekDaysExtra) / 60 * 1.5M *  hourlyWage;
+                totalSalary = salary + holidayExtraSalary + weekdaysExtraSalary;
+            }
+            else
+            {
+                holidayExtraSalary = 0M;
+                weekdaysExtraSalary = Convert.ToDecimal(dataWeekDaysExtra) / 60 * 1.5M * salary / hourlyWage;
+                totalSalary = salary + weekdaysExtraSalary;
+            }
+
+            return totalSalary;
         }
 
         public decimal HourlyWage(int month, decimal salary)
