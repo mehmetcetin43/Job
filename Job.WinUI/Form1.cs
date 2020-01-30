@@ -52,7 +52,7 @@ namespace Job.WinUI
             dgvBtnRemove.Name = "dgvBtnRemove";
             dgvBtnRemove.UseColumnTextForButtonValue = true;
             dataGridView2.Columns.Add(dgvBtnRemove);
-            dgvBtnUpdate.Text = "Updaate";
+            dgvBtnUpdate.Text = "Update";
             dgvBtnUpdate.Name = "dgvBtnUpdate";
             dgvBtnUpdate.UseColumnTextForButtonValue = true;
             dataGridView2.Columns.Add(dgvBtnUpdate);
@@ -73,8 +73,12 @@ namespace Job.WinUI
         {
             dataGridView2.Rows.Clear();
             int i = 0;
+            DataGridViewCellStyle color = new DataGridViewCellStyle();
+            
             foreach (var item in result)
             {
+                var x = item.Date.DayOfWeek;
+                
                 dataGridView2.Rows.Add();
                 dataGridView2["ID", i].Value = item.ID;
                 dataGridView2["Date2", i].Value = item.Date;
@@ -83,13 +87,21 @@ namespace Job.WinUI
                 dataGridView2["DailyWorkingHour2", i].Value = item.DailyWorkingHour;
                 dataGridView2["ExtraWorkingHour2", i].Value = item.ExtraWorkingHour;
                 dataGridView2["MissingWorkingHour2", i].Value = item.MissingWorkingHour;
+                if (x == DayOfWeek.Saturday || x == DayOfWeek.Sunday)
+                {
+                    color.BackColor = Color.Red;
+                    dataGridView2.Rows[i].DefaultCellStyle = color;
+                }
+                
                 i++;
             }
             dataGridView2.Sort(dataGridView2.Columns["Date2"], ListSortDirection.Ascending);
+            
         }
 
         private void tabControl1_Selected(object sender, TabControlEventArgs e)
         {
+            e.TabPage.Refresh();
             int saatBaslangic = 9;
             int dakikaBaslangic = 0;
             int[] saatler = new int[15];
