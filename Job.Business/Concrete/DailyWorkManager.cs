@@ -148,7 +148,7 @@ namespace Job.Business.Concrete
             else
             {
                 holidayExtraSalary = 0M;
-                weekdaysExtraSalary = Convert.ToDecimal(dataWeekDaysExtra) / 60 * 1.5M * salary / hourlyWage;
+                weekdaysExtraSalary = Convert.ToDecimal(dataWeekDaysExtra) / 60 * 1.5M *  hourlyWage;
                 totalSalary = salary + weekdaysExtraSalary;
             }
 
